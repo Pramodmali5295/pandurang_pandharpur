@@ -498,10 +498,10 @@ const Customers = () => {
                <div style="text-align: right;">
                  <div style="font-size: 26px; font-weight: bold; margin-bottom: 6px;">Hotel Pandurang</div>
                  <div style="font-size: 12px; line-height: 1.6;">
-                   Opp. Railway Station, Near Shriyash Hospital, Pandharpur 413304.<br>
-                   Phone : +91 9284793956 / 8080248271<br>
-                   GSTIN/UIN: 27AAPFB9198M1ZE<br>
-                   Email: pramodm200@gmail.com
+                   Vishrambag, Sangli.<br>
+                    Phone : +91 9503035935<br>
+                    GSTIN/UIN: 27ABCDE1234F1Z5<br>
+                    Email: pramodm200@gmail.com
                  </div>
                </div>
              </div>
