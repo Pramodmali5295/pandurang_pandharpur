@@ -43,20 +43,63 @@ const Rooms = () => {
   };
 
   const getFloorLabel = (roomNum) => {
-    const num = parseInt(roomNum);
-    if (isNaN(num)) return 'Other';
+    if (!roomNum) return 'Other';
+    const cleanRoomNum = String(roomNum).trim().toUpperCase();
     
-    if (num < 100) return 'Ground Floor';
-    
-    const series = Math.floor(num / 100);
-    switch(series) {
-      case 1: return 'First Floor';
-      case 2: return 'Second Floor';
-      case 3: return 'Third Floor';
-      case 4: return 'Fourth Floor';
-      case 5: return 'Fifth Floor';
-      default: return `${series}th Floor`;
+    // Extract prefix letters and numeric part
+    const prefixMatch = cleanRoomNum.match(/^([A-Z]+)?(\d+)?/);
+    const prefix = prefixMatch ? (prefixMatch[1] || '') : '';
+    const numStr = prefixMatch ? (prefixMatch[2] || '') : '';
+    const num = parseInt(numStr);
+
+    // Ground Floor prefix always wins
+    if (prefix === 'G') return 'Ground Floor';
+
+    if (!isNaN(num)) {
+      if (num >= 100) {
+        const series = Math.floor(num / 100);
+        switch(series) {
+          case 1: return 'First Floor';
+          case 2: return 'Second Floor';
+          case 3: return 'Third Floor';
+          case 4: return 'Fourth Floor';
+          case 5: return 'Fifth Floor';
+          case 6: return 'Sixth Floor';
+          case 7: return 'Seventh Floor';
+          case 8: return 'Eighth Floor';
+          case 9: return 'Ninth Floor';
+          case 10: return 'Tenth Floor';
+          default: return `${series}th Floor`;
+        }
+      } else {
+        // Double/single digit rooms with floor prefix (e.g. F1, F4, S2, S6, T3, T10, etc.)
+        if (prefix === 'F') {
+          if (num === 4) return 'Fourth Floor';
+          if (num === 5) return 'Fifth Floor';
+          return 'First Floor';
+        }
+        if (prefix === 'S') {
+          if (num === 6) return 'Sixth Floor';
+          if (num === 7) return 'Seventh Floor';
+          return 'Second Floor';
+        }
+        if (prefix === 'T') {
+          if (num === 10) return 'Tenth Floor';
+          return 'Third Floor';
+        }
+        if (prefix === 'E' && num === 8) return 'Eighth Floor';
+        if (prefix === 'N' && num === 9) return 'Ninth Floor';
+        
+        return 'Ground Floor';
+      }
     }
+
+    // Letter-only fallback
+    if (prefix === 'F') return 'First Floor';
+    if (prefix === 'S') return 'Second Floor';
+    if (prefix === 'T') return 'Third Floor';
+
+    return 'Other';
   };
 
   const handleChange = (e) => {
@@ -147,11 +190,23 @@ const Rooms = () => {
 
 
   const filteredRooms = rooms.filter(room => {
-    const matchesSearch = room.roomNumber.toLowerCase().includes(searchTerm.toLowerCase());
+    const roomNumStr = room.roomNumber !== undefined && room.roomNumber !== null ? String(room.roomNumber) : '';
+    const matchesSearch = roomNumStr.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'All' || room.status === statusFilter;
     const matchesType = typeFilter === 'All' || room.type === typeFilter;
     return matchesSearch && matchesStatus && matchesType;
-  }).sort((a,b) => a.roomNumber.localeCompare(b.roomNumber, undefined, {numeric: true}));
+  }).sort((a, b) => {
+    const roomA = a.roomNumber !== undefined && a.roomNumber !== null ? String(a.roomNumber) : '';
+    const roomB = b.roomNumber !== undefined && b.roomNumber !== null ? String(b.roomNumber) : '';
+    
+    const numA = parseInt(roomA.replace(/\D/g, '')) || 0;
+    const numB = parseInt(roomB.replace(/\D/g, '')) || 0;
+    
+    if (numA !== numB) {
+      return numA - numB;
+    }
+    return roomA.localeCompare(roomB, undefined, { numeric: true, sensitivity: 'base' });
+  });
 
   return (
     <div className="flex flex-col space-y-4 pb-8">
@@ -273,7 +328,19 @@ const Rooms = () => {
                     return acc;
                  }, {});
 
-                 const floorOrder = ['Ground Floor', 'First Floor', 'Second Floor', 'Third Floor', 'Fourth Floor'];
+                 const floorOrder = [
+                    'Ground Floor', 
+                    'First Floor', 
+                    'Second Floor', 
+                    'Third Floor', 
+                    'Fourth Floor', 
+                    'Fifth Floor', 
+                    'Sixth Floor', 
+                    'Seventh Floor', 
+                    'Eighth Floor', 
+                    'Ninth Floor', 
+                    'Tenth Floor'
+                 ];
                  const sortedGroups = Object.entries(groups).sort(([a], [b]) => {
                     const idxA = floorOrder.indexOf(a);
                     const idxB = floorOrder.indexOf(b);
@@ -298,27 +365,22 @@ const Rooms = () => {
                          <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
                          {floor}
                       </h3>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-3">
                         {floorRooms.map((room) => {
                            const isAvailable = room.status === 'Available';
-         
+          
                            return (
                              <div 
                                key={room.id} 
-                               onClick={() => {
-                                  if (isAvailable) {
-                                     navigate('/add-booking', { state: { roomId: room.id, roomNumber: room.roomNumber, roomType: room.type } });
-                                  } else {
-                                     setSelectedRoom(room);
-                                  }
-                               }}
-                               className={`group cursor-pointer rounded-lg w-12 h-12 transition-all hover:scale-110 shadow-sm flex flex-col items-center justify-center border ${
+                               onClick={() => setSelectedRoom(room)}
+                               className={`group cursor-pointer rounded-xl w-16 h-16 transition-all hover:scale-105 shadow-sm flex flex-col items-center justify-center border p-2 text-center ${
                                   isAvailable 
-                                    ? 'bg-emerald-500 border-emerald-600 text-white shadow-emerald-100' 
-                                    : 'bg-rose-500 border-rose-600 text-white shadow-rose-100'
+                                    ? 'bg-emerald-500 border-emerald-600 text-white shadow-emerald-100/30 hover:bg-emerald-600' 
+                                    : 'bg-rose-500 border-rose-600 text-white shadow-rose-100/30 hover:bg-rose-600'
                                }`}
                              >
-                                <h3 className="text-xs font-black leading-none">{room.roomNumber}</h3>
+                                <h3 className="text-sm font-black leading-none tracking-tight">{room.roomNumber}</h3>
+                                <span className="text-[9px] font-bold opacity-80 mt-1 uppercase tracking-wider">{room.type}</span>
                              </div>
                            );
                         })}
@@ -564,6 +626,20 @@ const Rooms = () => {
                             className="flex-1 py-3 bg-amber-100 text-amber-700 hover:bg-amber-200 font-bold rounded-xl transition-all shadow-sm text-sm flex justify-center items-center gap-2 border border-amber-200"
                         >
                             <CheckCircle2 size={16} /> Force Available
+                        </button>
+                    )}
+                    {selectedRoom.status === 'Available' && (
+                        <button 
+                            onClick={() => {
+                                const roomNum = selectedRoom.roomNumber;
+                                const roomId = selectedRoom.id;
+                                const roomType = selectedRoom.type;
+                                setSelectedRoom(null);
+                                navigate('/add-booking', { state: { roomId, roomNumber: roomNum, roomType } });
+                            }}
+                            className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-sm text-sm flex justify-center items-center gap-2"
+                        >
+                            <Plus size={16} /> Book Now
                         </button>
                     )}
                     <button 

@@ -316,7 +316,18 @@ const Allocations = () => {
       const matchesType = !typeFilter || typeFilter === 'All' || r.type === typeFilter;
 
       return isNotBooked && !hasActiveAllocation && notSelectedElsewhere && matchesType;
-    }).sort((a, b) => a.roomNumber.localeCompare(b.roomNumber, undefined, { numeric: true }));
+    }).sort((a, b) => {
+      const roomA = a.roomNumber !== undefined && a.roomNumber !== null ? String(a.roomNumber) : '';
+      const roomB = b.roomNumber !== undefined && b.roomNumber !== null ? String(b.roomNumber) : '';
+      
+      const numA = parseInt(roomA.replace(/\D/g, '')) || 0;
+      const numB = parseInt(roomB.replace(/\D/g, '')) || 0;
+      
+      if (numA !== numB) {
+        return numA - numB;
+      }
+      return roomA.localeCompare(roomB, undefined, { numeric: true, sensitivity: 'base' });
+    });
   };
   // Helper Functions
   const getCustomerName = useCallback((id) => {
