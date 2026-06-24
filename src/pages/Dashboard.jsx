@@ -855,6 +855,7 @@ const Dashboard = () => {
                           case 'F': return 1;
                           case 'S': return 2;
                           case 'T': return 3;
+                          default: break;
                         }
                         const digitsOnly = roomStr.replace(/\D/g, '');
                         if (digitsOnly.length >= 3) {
