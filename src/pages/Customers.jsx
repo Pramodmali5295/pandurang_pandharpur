@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useAppContext } from '../context/AppContext';
 import { db } from '../services/firebase';
 import { updateDoc, doc, deleteDoc, collection, addDoc, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
-import { UserCheck, Search, Users, Download, X, Clock, Trash2, Phone, MapPin, FileText, Eye, Calendar, History, Printer, UserPlus } from 'lucide-react';
+import { UserCheck, Search, Users, Download, X, Clock, Trash2, Phone, MapPin, FileText, Eye, Calendar, History, Printer } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import logoImage from '../assets/logo.jpg';
 
@@ -711,18 +711,6 @@ const Customers = () => {
             <p className="text-gray-500 text-sm mt-1">Manage customer profiles and history</p>
           </div>
           <div className="flex gap-2">
-            <button 
-              onClick={() => {
-                setEditingCustomer(null);
-                setFormData({
-                  name: '', phone: '', idProof: '', address: '', customerType: 'Regular'
-                });
-                setShowForm(true);
-              }}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-sm transition-all"
-            >
-              <UserPlus size={20} /> Add New Customer
-            </button>
             <button 
               onClick={exportToCSV}
               className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold py-2 px-4 rounded-lg shadow-sm transition-all"
