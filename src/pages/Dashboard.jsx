@@ -1,4 +1,4 @@
-import { BedDouble, Users, CheckCircle, Sparkles, TrendingUp, Calendar, IndianRupee, LogIn, LogOut, CreditCard, LayoutDashboard, CalendarRange, History, Printer, Search, FileText, ArrowRight, UserCheck } from 'lucide-react';
+import { BedDouble, Users, CheckCircle, Sparkles, TrendingUp, Calendar, IndianRupee, LogIn, LogOut, CreditCard, LayoutDashboard, CalendarRange, History, Printer } from 'lucide-react';
 import { Link } from 'react-router-dom'; // Assuming Link is from react-router-dom
 import React, { useMemo, useState } from 'react'; // Assuming React and useMemo are imported
 import { useAppContext } from '../context/AppContext'; // Assuming useAppContext is imported
@@ -807,13 +807,11 @@ const Dashboard = () => {
                         const booking = getBookingForRoomAndDay(room.id, date);
                         
                         let cellContent = null;
-                        let cellClass = "bg-transparent";
                         
                         if (booking) {
                           const guestName = getCustomerName(booking.customerId);
                           const isStart = idx === 0 || !getBookingForRoomAndDay(room.id, calendarDates[idx - 1]) || getBookingForRoomAndDay(room.id, calendarDates[idx - 1]).id !== booking.id;
                           
-                          cellClass = booking.status === 'Reserved' ? "bg-indigo-50 text-indigo-700" : "bg-emerald-50 text-emerald-700";
                           
                           cellContent = (
                             <div className={`h-full w-full rounded p-1 text-[9px] font-bold overflow-hidden text-center truncate ${booking.status === 'Reserved' ? 'border border-indigo-100 bg-indigo-50 text-indigo-700 shadow-sm' : 'border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-sm'}`} title={`${guestName} (Stay: ${booking.checkIn.slice(0,10)} to ${booking.checkOut.slice(0,10)})`}>

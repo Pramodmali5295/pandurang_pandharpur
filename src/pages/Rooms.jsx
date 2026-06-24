@@ -42,11 +42,6 @@ const Rooms = () => {
     });
   };
 
-  const getGuestName = (customerId) => {
-    const cust = customers.find(c => c.id === customerId);
-    return cust ? cust.name.split(' ')[0] : 'Guest';
-  };
-
   const getFloorLabel = (roomNum) => {
     const num = parseInt(roomNum);
     if (isNaN(num)) return 'Other';

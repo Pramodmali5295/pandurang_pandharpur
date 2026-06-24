@@ -171,7 +171,6 @@ const Allocations = () => {
   // Booking Sources State
   // Booking Sources State - Synced with DB
   const [bookingSources, setBookingSources] = useState([]);
-  const [focusedFields, setFocusedFields] = useState({});
 
   // Fetch/Sync Booking Sources
   useEffect(() => {
@@ -471,7 +470,7 @@ const Allocations = () => {
       const dateB = new Date(b.checkIn || 0).getTime();
       return dateB - dateA;
     });
-  }, [allocations, allocationSearch, statusTab, dateRange.start, dateRange.end, getCustomerName, getRoomNumber, getCustomerPhone, location.pathname]);
+  }, [allocations, allocationSearch, statusTab, dateRange.start, dateRange.end, getCustomerName, getRoomNumber, getCustomerPhone]);
 
   // --- Handlers ---
   const handleChange = (e) => {
